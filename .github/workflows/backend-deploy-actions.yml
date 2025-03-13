@@ -52,6 +52,8 @@ jobs:
             #application.yml 생성
             echo "$APPLICATION_YML" | base64 -d > /home/ec2-user/app/src/main/resources/application.yml
             chmod 600 /home/ec2-user/app/src/main/resources/application.yml
+
+            
             sudo systemctl start backend.service
           EOF
           
