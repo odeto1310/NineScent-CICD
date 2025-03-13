@@ -37,7 +37,7 @@ jobs:
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
 
-          scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $USER@$HOST:~/backend.jar
+          scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/mall-0.0.1-SNAPSHOT.jar $USER@$HOST:~/backend.jar
 
           # EC2에서 기존 백엔드 종료 후 새 JAR 실행
           ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
