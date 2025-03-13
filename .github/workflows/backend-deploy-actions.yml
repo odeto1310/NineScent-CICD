@@ -22,20 +22,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Gradle
-        run: |
-          chmod +x gradlew
-          ./gradlew clean build -x test
-
-      - name: Debug APPLICATION_YML
-        run: echo "${{ secrets.APPLICATION_YML }}"
-
-      # application.yml 파일을 GitHub Secrets에서 직접 텍스트로 생성
       - name: Create application.yml from Secrets
         run: |
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
-          cat ./src/main/resources/application.yml 
+          cat ./src/main/resources/application.yml  # 생성된 파일 내용 확인
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build -x test
 
       - name: Deploy to EC2
         env:
