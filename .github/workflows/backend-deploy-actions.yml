@@ -45,6 +45,9 @@ jobs:
             sudo systemctl stop backend.service || true
             sudo mv ~/backend.jar /home/ec2-user/app/backend.jar
 
+            # src/main/resources 디렉토리 확인 및 생성
+            mkdir -p /home/ec2-user/app/src/main/resources  # 디렉토리 생성
+
             #application.yml 생성
             echo "$APPLICATION_YML" | base64 --decode > /home/ec2-user/app/src/main/resources/application.yml
             chmod 600 /home/ec2-user/app/src/main/resources/application.yml
