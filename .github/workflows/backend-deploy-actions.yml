@@ -27,13 +27,18 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean build -x test
+          
+      # application.yml 파일을 GitHub Secrets에서 환경 변수로 생성
+      - name: Create application.yml from Secrets
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USER: ec2-user
-          APPLICATION_YML: ${{ secrets.APPLICATION_YML }}
         run: |
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
@@ -47,10 +52,10 @@ jobs:
             sudo mv ~/backend.jar /home/ec2-user/app/backend.jar
 
             # src/main/resources 디렉토리 확인 및 생성
-            mkdir -p /home/ec2-user/app/src/main/resources  # 디렉토리 생성
+            mkdir -p /home/ec2-user/app/src/main/resources 
 
             #application.yml 생성
-            echo "$APPLICATION_YML" | base64 -d > /home/ec2-user/app/src/main/resources/application.yml
+            echo "$APPLICATION_YML" > /home/ec2-user/app/src/main/resources/application.yml
             chmod 600 /home/ec2-user/app/src/main/resources/application.yml
 
             
