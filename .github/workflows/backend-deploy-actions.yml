@@ -45,3 +45,4 @@ jobs:
             sudo mv ~/backend.jar /home/ec2-user/app/backend.jar
             sudo systemctl start backend.service
           EOF
+          
