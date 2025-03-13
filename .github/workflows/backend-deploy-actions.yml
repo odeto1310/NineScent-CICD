@@ -1,0 +1,48 @@
+name : Backend Deploy Actions CI/CD
+
+on:
+  #workflow_dispatch
+  push:
+    branches:
+    - "main"
+    - "develop"
+  pull_request:
+    branches: "main"
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build -x test
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ec2-user
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $USER@$HOST:~/backend.jar
+
+          # EC2에서 기존 백엔드 종료 후 새 JAR 실행
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
+            sudo systemctl stop backend.service || true
+            sudo mv ~/backend.jar /home/ec2-user/app/backend.jar
+            sudo systemctl start backend.service
+          EOF
