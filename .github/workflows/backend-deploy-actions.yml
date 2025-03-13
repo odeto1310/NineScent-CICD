@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
-          cat ./src/main/resources/application.yml  # 생성된 파일 내용 확인
+          cat ./src/main/resources/application.yml 
 
       - name: Deploy to EC2
         env:
