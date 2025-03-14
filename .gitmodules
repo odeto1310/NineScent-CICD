@@ -1,3 +1,4 @@
 [submodule "submodule/original-project"]
 	path = submodule/original-project
 	url = https://github.com/odeto1310/NineScent-Backend.git
+	branch = develop
